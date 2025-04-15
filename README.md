@@ -18,34 +18,34 @@ visualizations.ipynb / index.html: Code or hosted visualizations (depending on y
 README.md: This file.
 
 📌 Visualizations
-1. 🍩 Donut Chart [1 point]
+1. 🍩 Donut Chart 
 What: Displays the Rep and corresponding Total values.
 
 Why: To compare the total values contributed by each representative.
 
-2. 📈 Correlation View with Brush [2 points]
+2. 📈 Correlation View with Brush
 What: Scatter plot showing correlation between Units and Unit Cost, with a Rectangular Brush to highlight individual Items.
 
 Why: To explore how unit cost and quantity sold vary together, and to focus on specific items.
 
-3. 🌊 Streamgraph [1 point]
+3. 🌊 Streamgraph
 What: A streamgraph showing variation of Total over time, colored by Item.
 
 Why: To visualize how the performance of each item has changed over time.
 
-4. 📊 Histogram with Mean Overlay [2 points]
+4. 📊 Histogram with Mean Overlay
 What: Histogram of Units sold with a vertical line representing the global mean.
 
 Why: To analyze the distribution of unit sales and spot outliers.
 
-5. 🧪 Additional Visualizations [3 points]
+5. 🧪 Additional Visualizations
 Two custom visualizations added to highlight other interesting aspects:
 
 Bar Chart: Item vs. average Total to compare item performance.
 
 Box Plot: Distribution of Unit Cost per Item to detect variability and outliers.
 
-6. 🧩 Multiview Dashboard [1 point]
+6. 🧩 Multiview Dashboard
 What: A unified multiview combining all six visualizations in one interactive interface.
 
 Why: To offer a comprehensive exploration tool for the HW_III dataset.
