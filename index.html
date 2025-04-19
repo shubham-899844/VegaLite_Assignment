@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Data Visualizations</title>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5.21.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.5.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.20.0"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .chart-container {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Sales Data Visualizations</h1>
+
+    <div class="chart-container" id="chart1"></div>
+    <div class="chart-container" id="chart2"></div>
+    <div class="chart-container" id="chart3"></div>
+    <div class="chart-container" id="chart4"></div>
+    <div class="chart-container" id="chart5"></div>
+    <div class="chart-container" id="chart6"></div>
+    <div class="chart-container" id="chart7"></div> <!-- New Chart Added -->
+
+    <script>
+        const vegaLiteSpec = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v6.json",
+            "data": {
+                "url": "https://raw.githubusercontent.com/shubham-899844/VegaLite_Assignment/refs/heads/main/Untitled%20spreadsheet%20-%20SalesOrders.csv"
+            },
+            "transform": [
+                {
+                    "calculate": "toNumber(replace(replace(datum.Total, ',', ''), '\"', ''))",
+                    "as": "CleanTotal"
+                }
+            ],
+            "config": {
+                "view": {"stroke": "transparent"},
+                "axis": {"labelFontSize": 12, "titleFontSize": 14},
+                "title": {"fontSize": 20},
+                "background": "#fcfcfc"
+            },
+            "vconcat": [
+                {
+                    "hconcat": [
+                        {
+                            "title": "Donut Chart: Total Sales by Rep",
+                            "mark": {"type": "arc", "innerRadius": 60},
+                            "encoding": {
+                                "theta": {"aggregate": "sum", "field": "CleanTotal", "type": "quantitative"},
+                                "color": {"field": "Rep", "type": "nominal"},
+                                "order": {"aggregate": "sum", "field": "CleanTotal", "type": "quantitative", "sort": "descending"},
+                                "tooltip": [
+                                    {"field": "Rep", "type": "nominal"},
+                                    {"aggregate": "sum", "field": "CleanTotal", "type": "quantitative", "title": "Total Sales"}
+                                ]
+                            }
+                        },
+                        {
+                            "title": "Scatter Plot: Units vs Unit Cost with Brush",
+                            "layer": [
+                                {
+                                    "selection": {
+                                        "brush": {"type": "interval"}
+                                    },
+                                    "mark": "point",
+                                    "encoding": {
+                                        "x": {"field": "Units", "type": "quantitative"},
+                                        "y": {"field": "Unit Cost", "type": "quantitative"},
+                                        "color": {
+                                            "condition": {"selection": "brush", "field": "Item", "type": "nominal"},
+                                            "value": "lightgray"
+                                        },
+                                        "tooltip": [
+                                            {"field": "Item", "type": "nominal"},
+                                            {"field": "Units", "type": "quantitative"},
+                                            {"field": "Unit Cost", "type": "quantitative"}
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "hconcat": [
+                        {
+                            "title": "Streamgraph: Total over Time by Item",
+                            "mark": {"type": "area", "interpolate": "basis", "stack": "center"},
+                            "encoding": {
+                                "x": {
+                                    "field": "OrderDate",
+                                    "type": "temporal",
+                                    "title": "Order Date",
+                                    "axis": {
+                                        "format": "%b %Y"
+                                    }
+                                },
+                                "y": {
+                                    "aggregate": "sum",
+                                    "field": "CleanTotal",
+                                    "type": "quantitative",
+                                    "title": "Total"
+                                },
+                                "color": {
+                                    "field": "Item",
+                                    "type": "nominal",
+                                    "title": "Item"
+                                },
+                                "tooltip": [
+                                    {"field": "Item", "type": "nominal", "title": "Item"},
+                                    {"aggregate": "sum", "field": "CleanTotal", "type": "quantitative", "title": "Total"}
+                                ]
+                            }
+                        },
+                        {
+                            "title": "Histogram: Distribution of Units with Mean Line",
+                            "layer": [
+                                {
+                                    "mark": "bar",
+                                    "encoding": {
+                                        "x": {"field": "Units", "bin": true, "type": "quantitative"},
+                                        "y": {"aggregate": "count", "type": "quantitative"},
+                                        "color": {"value": "#4682b4"},
+                                        "tooltip": [{"aggregate": "count", "type": "quantitative"}]
+                                    }
+                                },
+                                {
+                                    "mark": {"type": "rule", "color": "red", "strokeWidth": 2},
+                                    "encoding": {
+                                        "x": {
+                                            "aggregate": "mean",
+                                            "field": "Units",
+                                            "type": "quantitative"
+                                        },
+                                        "tooltip": [{"aggregate": "mean", "field": "Units", "type": "quantitative"}]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "hconcat": [
+                        {
+                            "title": "Total Sales by Item",
+                            "mark": {
+                                "type": "bar",
+                                "cornerRadiusTopLeft": 6,
+                                "cornerRadiusTopRight": 6,
+                                "color": "steelblue"
+                            },
+                            "encoding": {
+                                "x": {
+                                    "field": "Item",
+                                    "type": "nominal",
+                                    "axis": {"title": "Item"}
+                                },
+                                "y": {
+                                    "aggregate": "sum",
+                                    "field": "CleanTotal",
+                                    "type": "quantitative",
+                                    "axis": {"title": "Total Sales ($)"},
+                                    "sort": {"field": "sum(CleanTotal)", "op": "sum", "order": "descending"}
+                                },
+                                "tooltip": [
+                                    {"field": "Item", "type": "nominal"},
+                                    {"aggregate": "sum", "field": "CleanTotal", "type": "quantitative", "title": "Total Sales"}
+                                ]
+                            }
+                        },
+                        {
+                            "title": "Bar Chart: Total Units Sold by Region",
+                            "mark": "bar",
+                            "encoding": {
+                                "x": {"field": "Region", "type": "nominal"},
+                                "y": {"aggregate": "sum", "field": "Units", "type": "quantitative"},
+                                "color": {"field": "Region", "type": "nominal"},
+                                "tooltip": [
+                                    {"field": "Region", "type": "nominal"},
+                                    {"aggregate": "sum", "field": "Units", "type": "quantitative"}
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "hconcat": [
+                        {
+                            "title": "Line Chart: Average Unit Cost by Item Over Time",
+                            "mark": {"type": "line", "point": true},
+                            "encoding": {
+                                "x": {
+                                    "field": "OrderDate",
+                                    "type": "temporal",
+                                    "title": "Order Date",
+                                    "axis": {"format": "%b %Y"}
+                                },
+                                "y": {
+                                    "aggregate": "average",
+                                    "field": "Unit Cost",
+                                    "type": "quantitative",
+                                    "title": "Average Unit Cost"
+                                },
+                                "color": {
+                                    "field": "Item",
+                                    "type": "nominal",
+                                    "title": "Item"
+                                },
+                                "tooltip": [
+                                    {"field": "Item", "type": "nominal", "title": "Item"},
+                                    {"aggregate": "average", "field": "Unit Cost", "type": "quantitative", "title": "Average Unit Cost"}
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        };
+
+        vegaEmbed('#chart1', vegaLiteSpec);
+    </script>
+
+</body>
+</html>
